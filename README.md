@@ -11,3 +11,7 @@ however this claims it rebuilds the interpreter for the specific
 project.  Instead we can use details provided
 https://docs.python.org/3/extending/building.html#building
 for "dynamic learning"
+
+to compile, build setup.py as directed, 
+then run 
+$python setup.py build
