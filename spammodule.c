@@ -9,6 +9,7 @@
 // custom exceptions - declared at beginning
 static PyObject *SpamError;
 
+
 // spam.system in python
 static PyObject *
 spam_system(PyObject *self, PyObject *args)
@@ -19,9 +20,10 @@ spam_system(PyObject *self, PyObject *args)
 		if (!PyArg_ParseTuple(args, "s", &command))
 				// incorrect type presented in argument, err out
 				return NULL;
-		sts = sytem(command);
+		sts = system(command);
 		return PyLong_FromLong(sts);
 }
+
 
 // Some useful error tools
 // generally problems indicated with error value (NULL pointer, val=-1, etc.)
@@ -41,6 +43,67 @@ spam_system(PyObject *self, PyObject *args)
 // Failure of malloc()/realloc() -> PyErr_NoMemory()
 // PyArg_ParseTuple() + friends -> +# (okay); 0, -1 (failed)
 
+/*
+// raising spam.error for incorrect calls
+static PyObject *
+spam_system(PyObject *self, PyObject *args)
+{
+		const char *command;
+		int sts;
+
+		if (!PyArg_ParseTuple(args, "s", &command))
+				// failed to parse args
+				return NULL;
+		// execute command in unix system
+		sts = system(command);
+		// check status of command
+		if (sts < 0) {
+				PyErr_SetString(SpamError, "System command failed");
+				return NULL;
+		}
+
+		// output is a Python object, deal with this
+		return PyLong_FromLong(sts);
+}
+*/
+
+// A side note on None in Python:
+// if returning None in overlying Python code use
+// Py_INCREF(Py_None);
+// return Py_None;
+// as nonetypes in Python are also objects
+
+
+// To allow this to be called in Python, need method table
+static PyMethodDef SpamMethods[] = {
+		// VARARGS for general arguments
+		// KEYWORDS for keyword arguments
+		// 	in this case need extra set of parameters
+		// 	and use PyArg_ParseTupleAndKeywords()
+		{"system", spam_system, METH_VARARGS,
+				"Execute a shell command."},
+		{NULL, NULL, 0, NULL} /* sentinel? */
+};
+
+
+// method table
+static struct PyModuleDef spammodule = {
+		PyModuleDef_HEAD_INIT,
+		"spam", /* name of module */
+		NULL, /* documentation, may be NULL */
+		-1, /* size of per-interpreter state of module
+			   or -1 if module keeps state in global vars */
+		SpamMethods
+};
+
+// pass this method table structure to Python interpreter initialization
+PyMODINIT_FUNC
+PyInit_spam(void)
+{
+		return PyModule_Create(&spammodule);
+}
+
+/*
 // definition of SpamError
 PyMODINIT_FUNC
 PyInit_spam(void)
@@ -66,63 +129,7 @@ PyInit_spam(void)
 
 		return m;
 }
-
-// raising spam.error for incorrect calls
-static PyObject *
-spam_system(PyObject *self, PyObject *args)
-{
-		const char *command;
-		int sts;
-
-		if (!PyArg_ParseTuple(args, "s", &command))
-				// failed to parse args
-				return NULL;
-		// execute command in unix system
-		sts = system(command);
-		// check status of command
-		if (sts < 0) {
-				PyErr_SetString(SpamError, "System command failed");
-				return NULL;
-		}
-
-		// output is a Python object, deal with this
-		return PyLong_FromLong(sts);
-}
-
-// A side note on None in Python:
-// if returning None in overlying Python code use
-// Py_INCREF(Py_None);
-// return Py_None;
-// as nonetypes in Python are also objects
-
-
-// To allow this to be called in Python, need method table
-static PyMethodDef SpamMethods[] = {
-		// VARARGS for general arguments
-		// KEYWORDS for keyword arguments
-		// 	in this case need extra set of parameters
-		// 	and use PyArg_ParseTupleAndKeywords()
-		{"system", spam_system, METH_VARARGS,
-				"Execute a shell command."},
-		{NULL, NULL, 0, NULL} /* sentinel? */
-};
-
-// method table
-static struct PyModuleDef spammodule = {
-		PyModuleDef_HEAD_INIT,
-		"spam", /* name of module */
-		spam_doc, /* documentation, may be NULL */
-		-1, /* size of per-interpreter state of module
-			   or -1 if module keeps state in global vars */
-		SpamMethods
-};
-
-// pass this method table structure to Python interpreter initialization
-PyMODINIT_FUNC
-PyInit_spam(void)
-{
-		return PyModule_Create(&spammodule);
-}
+*/
 
 // execution of module through python
 int 

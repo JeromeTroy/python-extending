@@ -3,7 +3,7 @@
 from distutils.core import setup, Extension
 
 module1 = Extension("spam",
-        sources = ["spam.c"])
+        sources = ["spammodule.c"])
 
 setup(name="Spam",
         version="1.0",
