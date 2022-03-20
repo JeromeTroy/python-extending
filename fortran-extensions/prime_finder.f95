@@ -1,5 +1,7 @@
 PROGRAM PRIMEFINDER
 
+    ! this program is unused in Python, only subroutine is useful for python
+    ! leaving this part in for testing purposes
     IMPLICIT NONE
 
     INTEGER (KIND=8), PARAMETER :: NUM_PRIMES = 5000 
@@ -17,6 +19,11 @@ SUBROUTINE GET_PRIMES(N_PRIMES, PRIMES)
     INTEGER (KIND=8) :: N_PRIMES
     INTEGER (KIND=8), DIMENSION(0:N_PRIMES-1) :: PRIMES
     INTEGER (KIND=8) :: PRIMES_FOUND, PRIME_CAND, IND
+
+    ! instructions to build python codes
+    !F2PY INTENT(IN) N_PRIMES
+    !F2PY INTENT(OUT) PRIMES
+    !F2PY DEPEND(N_PRIMES) PRIMES
 
     PRIMES(0) = 2
     PRIMES_FOUND = 1

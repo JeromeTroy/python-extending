@@ -1,7 +1,7 @@
 # python-extending
-Following tutorial for extending Python with C
+Following tutorial for extending Python with C and Fortran
 
-## Some directions
+## Some directions for C
 After building the extension module c code, 
 we need to compile it and link it to python.
 
@@ -15,3 +15,11 @@ for "dynamic learning"
 to compile, build setup.py as directed, 
 then run 
 $python setup.py build
+
+## Some directions for Fortran
+After building the extension module fortran code
+we need to compile it so that python can use it.
+This is done using f2py:
+
+$f2py -c <fortran file> -m <module name for python>
+
